@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Fraunces", serif;
+  --font-sans: "Work Sans", sans-serif;
+
+  /* Paleta provisional "ancestral": tierra, musgo y arcilla.
+     Se reemplaza fácilmente por la paleta real del cliente ajustando estos tokens. */
+  --color-cream: #f7f2e7;
+  --color-cream-soft: #efe9d9;
+  --color-sage: #eef0e4;
+  --color-ink: #2c2a22;
+  --color-ink-soft: #56543f;
+  --color-moss: #4b5a3c;
+  --color-moss-dark: #333f29;
+  --color-moss-light: #8a9770;
+  --color-clay: #bf6f45;
+  --color-clay-light: #e7b48c;
+  --color-sand: #d9cba9;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background-color: var(--color-clay-light);
+  color: var(--color-ink);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}

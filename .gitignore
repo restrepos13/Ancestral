@@ -1,0 +1,7 @@
+node_modules
+dist
+.DS_Store
+*.log
+
+# Documentos de referencia del topógrafo (pesados, no se usan en el sitio)
+src/assets/images/*.pdf
