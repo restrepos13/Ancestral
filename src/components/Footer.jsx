@@ -61,12 +61,11 @@ export default function Footer() {
           </form>
         </div>
 
-        <div className="grid sm:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10 pt-16">
+        <div className="grid gap-10 pt-16 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <Logo height={44} />
             <p className="mt-4 text-sm text-cream/60 max-w-xs leading-relaxed">
-              Una parcelación en San Carlos para quienes buscan tierra propia y una vida con
-              más raíces y calma.
+              Ancestral. Tierra para vivirla, cuidarla y hacerla parte de tu historia.
             </p>
           </div>
 

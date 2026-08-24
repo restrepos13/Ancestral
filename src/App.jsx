@@ -1,10 +1,11 @@
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Values from './components/Values'
-import About from './components/About'
-import Listings from './components/Listings'
+import Carousel from './components/Carousel'
+import Bridge from './components/Bridge'
 import LotsMap from './components/LotsMap'
 import Faq from './components/Faq'
+import ClosingCta from './components/ClosingCta'
 import Footer from './components/Footer'
 
 export default function App() {
@@ -14,10 +15,11 @@ export default function App() {
       <main>
         <Hero />
         <Values />
-        <About />
-        <Listings />
+        <Carousel />
+        <Bridge />
         <LotsMap />
         <Faq />
+        <ClosingCta />
       </main>
       <Footer />
     </div>

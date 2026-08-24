@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useAnimation } from 'framer-motion'
 import planoRealImg from '../assets/images/plano-real.jpg'
 import plano66Img from '../assets/images/plano-66.jpg'
 import lotsData29 from '../data/lotes-plano.json'
@@ -9,6 +9,7 @@ import { buildWhatsAppLink } from '../config'
 import Reveal from './Reveal'
 
 const EASE = [0.16, 1, 0.3, 1]
+const ZOOM = 1.8
 
 const STATUS_STYLES = {
   disponible: { fill: 'rgba(75,90,60,0.38)', hover: 'rgba(75,90,60,0.62)', label: 'Disponible', dot: 'bg-moss' },
@@ -17,7 +18,9 @@ const STATUS_STYLES = {
 }
 
 const VIEWS = {
+  // Oculto por ahora (no borrado): reactivar quitando `hidden: true` cuando se necesite mostrar de nuevo.
   29: {
+    hidden: true,
     label: '29 lotes certificados',
     img: planoRealImg,
     data: lotsData29,
@@ -28,22 +31,26 @@ const VIEWS = {
     note: 'Coordenadas reales, sistema MAGNA Colombia Bogotá · San Carlos, Antioquia.',
   },
   66: {
-    label: 'Etapa 2 · plano general',
+    label: 'Plano general de lotes',
     img: plano66Img,
     data: lotsData66,
-    alt: 'Plano general de la segunda etapa de Ancestral con sus lotes delimitados',
+    alt: 'Plano general de Ancestral con sus lotes delimitados',
     scaleLabel: 'Delimitación según plano',
     intro:
-      'Plano general de la segunda etapa. Toca un lote para ver su detalle; las áreas seleccionables siguen los linderos dibujados en el plano.',
+      'Plano general de lotes. Toca un lote para ver su detalle; las áreas seleccionables siguen los linderos dibujados en el plano.',
     note: 'La delimitación visual fue ajustada contra el plano de coordenadas disponible en los archivos del proyecto.',
   },
 }
 
+const VISIBLE_VIEWS = Object.entries(VIEWS).filter(([, v]) => !v.hidden)
+
 export default function LotsMap() {
   const { statusByLot } = useLotStatus()
-  const [view, setView] = useState(29)
+  const [view, setView] = useState(66)
   const [selected, setSelected] = useState(null)
   const [hovered, setHovered] = useState(null)
+  const [origin, setOrigin] = useState('50% 50%')
+  const zoomControls = useAnimation()
 
   const current = VIEWS[view]
   const lots = current.data.lots
@@ -55,6 +62,25 @@ export default function LotsMap() {
     setView(v)
     setSelected(null)
     setHovered(null)
+    zoomControls.set({ scale: 1 })
+  }
+
+  const selectLot = async (number) => {
+    const lot = lots.find((l) => l.number === number)
+    if (!lot) return
+    if (selected !== null) {
+      await zoomControls.start({ scale: 1, transition: { duration: 0.35, ease: EASE } })
+    }
+    const [cx, cy] = lot.label
+    setOrigin(`${(cx / current.data.width) * 100}% ${(cy / current.data.height) * 100}%`)
+    setSelected(number)
+    await zoomControls.start({ scale: ZOOM, transition: { duration: 0.65, ease: EASE } })
+  }
+
+  const resetZoom = async () => {
+    if (selected === null) return
+    await zoomControls.start({ scale: 1, transition: { duration: 0.45, ease: EASE } })
+    setSelected(null)
   }
 
   return (
@@ -71,19 +97,21 @@ export default function LotsMap() {
           <p className="mt-3 text-xs text-ink-soft/70 max-w-lg">{current.note}</p>
         </Reveal>
 
-        <div className="mt-8 inline-flex rounded-full bg-white p-1 shadow-sm">
-          {Object.entries(VIEWS).map(([key, v]) => (
-            <button
-              key={key}
-              onClick={() => changeView(Number(key))}
-              className={`rounded-full px-4 py-2 text-xs tracking-wide transition-colors duration-300 ${
-                view === Number(key) ? 'bg-moss text-cream' : 'text-ink-soft'
-              }`}
-            >
-              {v.label}
-            </button>
-          ))}
-        </div>
+        {VISIBLE_VIEWS.length > 1 && (
+          <div className="mt-8 inline-flex rounded-full bg-white p-1 shadow-sm">
+            {VISIBLE_VIEWS.map(([key, v]) => (
+              <button
+                key={key}
+                onClick={() => changeView(Number(key))}
+                className={`rounded-full px-4 py-2 text-xs tracking-wide transition-colors duration-300 ${
+                  view === Number(key) ? 'bg-moss text-cream' : 'text-ink-soft'
+                }`}
+              >
+                {v.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="mt-8 grid lg:grid-cols-[1.7fr_1fr] gap-8 items-start">
           <Reveal delay={0.1} className="rounded-3xl bg-white p-6 shadow-lg">
@@ -97,39 +125,68 @@ export default function LotsMap() {
                 className="relative w-full rounded-2xl overflow-hidden"
                 style={{ aspectRatio: `${current.data.width} / ${current.data.height}` }}
               >
-                <img
-                  src={current.img}
-                  alt={current.alt}
-                  className="absolute inset-0 h-full w-full object-cover"
-                  draggable={false}
-                />
-                <svg
-                  viewBox={`0 0 ${current.data.width} ${current.data.height}`}
-                  className="absolute inset-0 h-full w-full"
+                <motion.div
+                  className="absolute inset-0"
+                  style={{ transformOrigin: origin }}
+                  initial={{ scale: 1 }}
+                  animate={zoomControls}
+                  onClick={(e) => {
+                    if (e.target.tagName !== 'polygon') resetZoom()
+                  }}
                 >
-                  {lots.map((lot) => {
-                    const status = getStatus(lot.number)
-                    const style = STATUS_STYLES[status]
-                    const isBlocked = status === 'vendido'
-                    const isActive = hovered === lot.number || selected === lot.number
+                  <img
+                    src={current.img}
+                    alt={current.alt}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    draggable={false}
+                  />
+                  <svg
+                    viewBox={`0 0 ${current.data.width} ${current.data.height}`}
+                    className="absolute inset-0 h-full w-full"
+                  >
+                    {lots.map((lot) => {
+                      const status = getStatus(lot.number)
+                      const style = STATUS_STYLES[status]
+                      const isBlocked = status === 'vendido'
+                      const isSelected = selected === lot.number
+                      const isActive = hovered === lot.number || isSelected
 
-                    return (
-                      <polygon
-                        key={lot.number}
-                        points={lot.points.map((p) => p.join(',')).join(' ')}
-                        fill={isActive || isBlocked ? style.hover : 'transparent'}
-                        className={
-                          isBlocked
-                            ? 'cursor-not-allowed'
-                            : 'cursor-pointer transition-colors duration-300 ease-out'
-                        }
-                        onMouseEnter={() => !isBlocked && setHovered(lot.number)}
-                        onMouseLeave={() => setHovered(null)}
-                        onClick={() => !isBlocked && setSelected(lot.number)}
-                      />
-                    )
-                  })}
-                </svg>
+                      return (
+                        <polygon
+                          key={lot.number}
+                          points={lot.points.map((p) => p.join(',')).join(' ')}
+                          fill={isActive || isBlocked ? style.hover : 'transparent'}
+                          stroke={isSelected ? 'var(--color-clay)' : 'none'}
+                          strokeWidth={isSelected ? 2.5 : 0}
+                          vectorEffect="non-scaling-stroke"
+                          className={
+                            isBlocked
+                              ? 'cursor-not-allowed'
+                              : 'cursor-pointer transition-colors duration-300 ease-out'
+                          }
+                          onMouseEnter={() => !isBlocked && setHovered(lot.number)}
+                          onMouseLeave={() => setHovered(null)}
+                          onClick={() => !isBlocked && selectLot(lot.number)}
+                        />
+                      )
+                    })}
+                  </svg>
+                </motion.div>
+
+                <AnimatePresence>
+                  {selected !== null && (
+                    <motion.button
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.3, ease: EASE }}
+                      onClick={resetZoom}
+                      className="absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-ink/70 px-3 py-1.5 text-xs text-cream backdrop-blur-sm transition-colors duration-300 hover:bg-ink/85"
+                    >
+                      Ver plano completo ✕
+                    </motion.button>
+                  )}
+                </AnimatePresence>
               </motion.div>
             </AnimatePresence>
 
