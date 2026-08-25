@@ -26,13 +26,15 @@ export default function Navbar() {
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
-        scrolled ? 'bg-ink/90 backdrop-blur-md shadow-lg' : 'bg-transparent'
-      }`}
+      className="fixed inset-x-0 top-0 z-50"
     >
-      <nav className="mx-auto max-w-6xl px-6 md:px-10 h-20 flex items-center justify-between">
+      <nav
+        className={`flex h-20 w-full items-center justify-between px-6 backdrop-blur-md transition-colors duration-500 md:px-10 ${
+          scrolled ? 'bg-black/70' : 'bg-black/40'
+        }`}
+      >
         <a href="#inicio">
-          <Logo height={38} />
+          <Logo height={scrolled ? 36 : 56} />
         </a>
 
         <div className="hidden md:flex items-center gap-9">
@@ -49,9 +51,10 @@ export default function Navbar() {
 
         <a
           href="#contacto"
-          className="hidden md:inline-flex items-center rounded-full bg-clay px-5 py-2.5 text-sm text-cream transition-all duration-300 hover:bg-clay-light hover:text-ink hover:-translate-y-0.5"
+          style={{ backgroundColor: '#b39a50' }}
+          className="hidden md:inline-flex items-center rounded-full px-5 py-2.5 text-sm text-ink transition-all duration-300 hover:brightness-95 hover:-translate-y-0.5"
         >
-          Contáctanos
+          Agendar visita
         </a>
 
         <button
@@ -69,7 +72,7 @@ export default function Navbar() {
         initial={false}
         animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="md:hidden overflow-hidden bg-ink/95 backdrop-blur-md"
+        className="w-full overflow-hidden bg-ink/90 backdrop-blur-md md:hidden"
       >
         <div className="flex flex-col gap-1 px-6 pb-6">
           {LINKS.map((link) => (
@@ -85,9 +88,10 @@ export default function Navbar() {
           <a
             href="#contacto"
             onClick={() => setOpen(false)}
-            className="mt-2 inline-flex items-center justify-center rounded-full bg-clay px-5 py-2.5 text-sm text-cream"
+            style={{ backgroundColor: '#b39a50' }}
+            className="mt-2 inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm text-ink"
           >
-            Contáctanos
+            Agendar visita
           </a>
         </div>
       </motion.div>

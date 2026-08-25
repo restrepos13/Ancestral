@@ -29,7 +29,7 @@ export default function Values() {
           {VALUES.map((v, i) => (
             <Reveal key={v.title} delay={i * 0.12} className="flex flex-col items-center text-center">
               <img src={v.img} alt={v.title} className="h-40 w-auto" draggable={false} />
-              <p className="mt-2 text-sm text-ink-soft leading-relaxed max-w-[220px]">{v.text}</p>
+              <p className="mt-2 text-justify text-sm text-ink-soft leading-relaxed max-w-[220px]">{v.text}</p>
             </Reveal>
           ))}
         </div>

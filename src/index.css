@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: "Fraunces", serif;
+  --font-display: "Playfair Display", serif;
   --font-sans: "Work Sans", sans-serif;
 
   /* Paleta provisional "ancestral": tierra, musgo y arcilla.
@@ -9,7 +9,7 @@
   --color-cream: #f7f2e7;
   --color-cream-soft: #efe9d9;
   --color-sage: #eef0e4;
-  --color-ink: #2c2a22;
+  --color-ink: #1c2a12;
   --color-ink-soft: #56543f;
   --color-moss: #4b5a3c;
   --color-moss-dark: #333f29;

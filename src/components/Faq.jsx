@@ -112,7 +112,7 @@ export default function Faq() {
                     >
                       <div className="pt-3 pr-8 space-y-3">
                         {item.a.map((paragraph, pi) => (
-                          <p key={pi} className="text-ink-soft leading-relaxed">
+                          <p key={pi} className="text-justify text-ink-soft leading-relaxed">
                             {renderBold(paragraph)}
                           </p>
                         ))}
