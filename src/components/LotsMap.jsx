@@ -4,12 +4,13 @@ import planoRealImg from '../assets/images/plano-real.jpg'
 import plano66Img from '../assets/images/plano-66.jpg'
 import montanaImg from '../assets/images/premio-montana.jpg'
 import bosqueImg from '../assets/images/bosque-magico.jpg'
-import rioImg from '../assets/images/hero-rio.jpg'
+import rioImg from '../assets/images/vip-rio.jpg'
 import vipSinRioImg from '../assets/images/vip-sin-rio.jpg'
 import lotsData29 from '../data/lotes-plano.json'
 import lotsData66 from '../data/lotes-66-plano.json'
 import useLotStatus from '../hooks/useLotStatus'
 import { buildWhatsAppLink } from '../config'
+import { trackWhatsAppClick } from '../analytics'
 import Reveal from './Reveal'
 import Logo from './Logo'
 
@@ -63,7 +64,7 @@ const VIEWS = {
 const VISIBLE_VIEWS = Object.entries(VIEWS).filter(([, v]) => !v.hidden)
 
 export default function LotsMap() {
-  const { statusByLot } = useLotStatus()
+  const { statusByLot, loading: statusLoading, isLive } = useLotStatus()
   const [view, setView] = useState(66)
   const [selected, setSelected] = useState(null)
   const [hovered, setHovered] = useState(null)
@@ -163,6 +164,8 @@ export default function LotsMap() {
                     alt={current.alt}
                     className="absolute inset-0 h-full w-full object-cover"
                     draggable={false}
+                    loading="lazy"
+                    decoding="async"
                   />
                   <svg
                     viewBox={`0 0 ${current.data.width} ${current.data.height}`}
@@ -222,6 +225,12 @@ export default function LotsMap() {
               </div>
               <p className="text-xs text-ink-soft/60">{current.scaleLabel}</p>
             </div>
+
+            {!statusLoading && !isLive && (
+              <p className="mt-3 text-xs text-clay">
+                No pudimos confirmar la disponibilidad en tiempo real. Escríbenos por WhatsApp para verificar antes de decidir.
+              </p>
+            )}
           </Reveal>
 
           <div className="flex flex-col gap-6 lg:sticky lg:top-28">
@@ -261,6 +270,7 @@ export default function LotsMap() {
                         href={buildWhatsAppLink(`Hola, me interesa el lote ${selectedLot.number} de Ancestral.`)}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => trackWhatsAppClick('lot_detail')}
                         className="mt-6 inline-flex items-center rounded-full bg-moss px-6 py-3 text-sm text-cream transition-all duration-300 hover:bg-moss-dark hover:-translate-y-0.5 hover:shadow-lg"
                       >
                         Consultar por WhatsApp →
@@ -293,6 +303,8 @@ export default function LotsMap() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4, ease: EASE }}
                 className="absolute inset-0 h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
               />
             </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
@@ -308,6 +320,7 @@ export default function LotsMap() {
             href={buildWhatsAppLink('Hola, quiero cotizar un lote en Ancestral.')}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackWhatsAppClick('cotizar_lote')}
             className="inline-flex items-center rounded-full bg-clay-light px-8 py-4 text-sm uppercase tracking-wide text-ink transition-all duration-300 hover:-translate-y-0.5 hover:bg-clay hover:text-cream"
           >
             Cotizar lote →

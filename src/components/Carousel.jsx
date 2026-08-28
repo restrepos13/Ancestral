@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import rioImg from '../assets/images/hero-rio.jpg'
+import rioImg from '../assets/images/vip-rio.jpg'
 import montanaImg from '../assets/images/premio-montana.jpg'
 import bosqueImg from '../assets/images/bosque-magico.jpg'
 import Reveal from './Reveal'
@@ -63,6 +63,8 @@ export default function Carousel() {
             exit={{ opacity: 0, x: -dir * 60 }}
             transition={{ duration: 0.6, ease: EASE }}
             className="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />

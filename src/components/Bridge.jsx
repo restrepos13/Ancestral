@@ -52,6 +52,8 @@ export default function Bridge() {
             src={puenteImg}
             alt="Puente sobre el río cerca de Ancestral, San Carlos"
             className="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         </Reveal>
 

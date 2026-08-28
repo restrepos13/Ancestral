@@ -1,4 +1,5 @@
 import { buildWhatsAppLink } from '../config'
+import { trackWhatsAppClick } from '../analytics'
 import Logo from './Logo'
 
 const COLUMNS = [
@@ -14,7 +15,7 @@ const COLUMNS = [
     title: 'Contacto',
     links: [
       { label: 'WhatsApp', href: '#contacto' },
-      { label: 'San Carlos, Antioquia', href: '#contacto' },
+      { label: 'San Carlos, Antioquia', href: 'https://share.google/RkHKoXt6XGHV0TTQP', external: true },
     ],
   },
 ]
@@ -37,7 +38,11 @@ export default function Footer() {
               <ul className="mt-4 space-y-2.5">
                 {col.links.map((link) => (
                   <li key={link.label}>
-                    <a href={link.href} className="text-sm text-cream/60 hover:text-cream transition-colors duration-300">
+                    <a
+                      href={link.href}
+                      {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                      className="text-sm text-cream/60 hover:text-cream transition-colors duration-300"
+                    >
                       {link.label}
                     </a>
                   </li>
@@ -52,6 +57,7 @@ export default function Footer() {
               href={buildWhatsAppLink('Hola, quiero más información sobre Ancestral.')}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackWhatsAppClick('footer')}
               className="mt-4 inline-flex items-center rounded-full bg-cream/10 px-5 py-3 text-sm text-cream transition-colors duration-300 hover:bg-cream/20"
             >
               WhatsApp →

@@ -3,8 +3,10 @@ import heroImg from '../assets/images/hero-rio.jpg'
 
 const EASE = [0.16, 1, 0.3, 1]
 
+const LOCATION_MAP_URL = 'https://share.google/RkHKoXt6XGHV0TTQP'
+
 const BAR_STATS = [
-  { label: 'Ubicación', value: 'San Carlos, Antioquia', sub: 'Colombia' },
+  { label: 'Ubicación', value: 'San Carlos, Antioquia', sub: 'Colombia', href: LOCATION_MAP_URL },
   { label: 'Lotes', value: '64' },
   { label: 'Área desde', value: '1.750 m²' },
 ]
@@ -56,13 +58,19 @@ export default function Hero() {
       >
         <div className="flex flex-col items-stretch gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="grid grid-cols-3 gap-3 sm:flex sm:gap-10">
-            {BAR_STATS.map((stat) => (
-              <div key={stat.label}>
-                <p className="text-[10px] uppercase tracking-widest text-cream/60 sm:text-[11px]">{stat.label}</p>
-                <p className="mt-1 font-display text-base text-cream sm:text-lg">{stat.value}</p>
-                {stat.sub && <p className="text-[11px] text-cream/60">{stat.sub}</p>}
-              </div>
-            ))}
+            {BAR_STATS.map((stat) => {
+              const Wrapper = stat.href ? 'a' : 'div'
+              return (
+                <Wrapper
+                  key={stat.label}
+                  {...(stat.href ? { href: stat.href, target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
+                  <p className="text-[10px] uppercase tracking-widest text-cream/60 sm:text-[11px]">{stat.label}</p>
+                  <p className="mt-1 font-display text-base text-cream sm:text-lg">{stat.value}</p>
+                  {stat.sub && <p className="text-[11px] text-cream/60">{stat.sub}</p>}
+                </Wrapper>
+              )
+            })}
           </div>
           <a
             href="#lotes"

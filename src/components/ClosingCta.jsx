@@ -1,5 +1,6 @@
 import Reveal from './Reveal'
 import { buildWhatsAppLink } from '../config'
+import { trackWhatsAppClick } from '../analytics'
 
 export default function ClosingCta() {
   return (
@@ -18,6 +19,7 @@ export default function ClosingCta() {
             href={buildWhatsAppLink('Hola, quiero agendar una visita a Ancestral.')}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackWhatsAppClick('closing_cta')}
             className="inline-flex items-center justify-center rounded-full bg-clay-light px-8 py-5 text-sm uppercase tracking-wide text-ink transition-all duration-300 hover:-translate-y-0.5 hover:bg-clay hover:text-cream md:justify-self-end"
           >
             Agendar visita →
