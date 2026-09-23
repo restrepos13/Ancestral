@@ -6,6 +6,12 @@
 // GA4_ID:         Google Analytics > Administrador > Flujos de datos > Web > ID de medición (G-XXXXXXX)
 // META_PIXEL_ID:  Meta Business Manager > Administrador de eventos > Orígenes de datos > tu píxel
 // TIKTOK_PIXEL_ID: TikTok Ads Manager > Herramientas > Eventos > Web Events > tu píxel
+//
+// OJO: GA4 (G-7M162QZYPX), Google Tag Manager (GTM-N8SNF5L5) y el pixel de Meta
+// (1778327993188254) ya estan instalados directamente en index.html, para que
+// carguen antes que React y los verificadores de Google y Meta los detecten.
+// Por eso estos valores se dejan vacios a proposito: si los rellenas, los
+// scripts se cargarian dos veces y cada visita se contaria doble.
 export const GA4_ID = ''
 export const META_PIXEL_ID = ''
 export const TIKTOK_PIXEL_ID = ''
